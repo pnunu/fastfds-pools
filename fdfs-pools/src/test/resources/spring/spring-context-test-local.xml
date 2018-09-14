@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <context:property-placeholder location="classpath*:properties/app-test.properties"/>
+
+    <!-- fdfs 对象连接池配置 -->
+    <bean id="fdfsGenericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxIdle" value="${fdfs.pool_maxIdle}"/>
+        <property name="maxTotal" value="${fdfs.pool_maxTotal}" />
+        <property name="minIdle" value="${fdfs.pool_minIdle}" />
+        <property name="maxWaitMillis" value="${fdfs.pool_maxWaitMillis}" />
+    </bean>
+
+    <!-- fdfs 对象连接池 -->
+    <bean id="fdfsPool" class="com.fdfs.pool.factory.spring.FastfdsPoolFactoryBean" destroy-method="destroy">
+        <property name="fdfsServerHosts" value="${fdfs.fdfsServerHosts}" />
+        <property name="antiStealToken" value="${fdfs.antiStealToken}" />
+        <property name="secretKey" value="${fdfs.secretKey}" />
+        <property name="trackerHttpPort" value="${fdfs.trackerHttpPort}" />
+        <property name="connectTimeout" value="${fdfs.connectTimeout}" />
+        <property name="networkTimeout" value="${fdfs.networkTimeout}" />
+        <property name="charset" value="${fdfs.charset}" />
+        <property name="genericObjectPoolConfig" ref="fdfsGenericObjectPoolConfig"/>
+
+        <!-- 相当于调用com.fdfs.util.FdfsUtil.setFdfsPool() -->
+        <property name="enableFdfsUtil" value="true" />
+    </bean>
+
+    <!-- fdfs 工具类 -->
+    <!--<bean class="com.fdfs.util.FdfsUtil" >
+        <property name="fdfsPool" ref="fdfsPool" />
+    </bean>-->
+
+</beans>
